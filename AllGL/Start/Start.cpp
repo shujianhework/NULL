@@ -44,22 +44,18 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// TODO: 在此放置代码。
 	hInst = hInstance;
 	// 初始化全局字符串
-	//LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-	//LoadStringW(hInstance, IDC_GLFRAME, szWindowClass, MAX_LOADSTRING);
 	if (MessageBox(NULL, L"你想在全屏模式下运行么？", L"设置全屏模式", MB_YESNO | MB_ICONQUESTION) == IDNO){
 		fullscreen = false;
 	}
-	if (!CreateGLWindow(640, 480, 16, fullscreen)) {
+
+	HDC hdc = CreateDC(_T("display"), NULL, NULL, NULL);
+	int nBitsPerPixel = GetDeviceCaps(hdc, BITSPIXEL);
+	DeleteDC(hdc);
+	if (!CreateGLWindow(640, 480, nBitsPerPixel, fullscreen)) {
 		return 0;
 	}
 	// 执行应用程序初始化: 
-	/*if (!InitInstance (hInstance, nCmdShow))
-	{
-	return FALSE;
-	}
-	*/
 	ShowWindow(hwnd, true);
-	//HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_GLFRAME));
 
 	MSG msg;
 	BOOL done = false;
@@ -70,11 +66,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 				done = true;
 			}
 			else {
-				//if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-				//{
-					TranslateMessage(&msg);
-					DispatchMessage(&msg);
-				//}
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
 			}
 		}
 		else {
