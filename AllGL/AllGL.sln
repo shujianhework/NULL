@@ -20,6 +20,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Start", "Start\Start.vcxpro
 		{55AE3D72-7DE6-F19F-AEF2-9AE8CA26CF3D} = {55AE3D72-7DE6-F19F-AEF2-9AE8CA26CF3D}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LightKeyBoardBlend", "LightKeyBoardBlend\LightKeyBoardBlend.vcxproj", "{F1CF7143-338B-4A99-A13C-73DE7388CF9C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OtherTest", "OtherTest\OtherTest.vcxproj", "{0ADC0389-57B5-45FF-886B-022AECCD443B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -56,6 +60,18 @@ Global
 		{6F2C3E49-9429-43C6-AA4A-E6E2E3BA0587}.Release|Win32.ActiveCfg = Release|Win32
 		{6F2C3E49-9429-43C6-AA4A-E6E2E3BA0587}.Release|Win32.Build.0 = Release|Win32
 		{6F2C3E49-9429-43C6-AA4A-E6E2E3BA0587}.Release|x64.ActiveCfg = Release|Win32
+		{F1CF7143-338B-4A99-A13C-73DE7388CF9C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F1CF7143-338B-4A99-A13C-73DE7388CF9C}.Debug|Win32.Build.0 = Debug|Win32
+		{F1CF7143-338B-4A99-A13C-73DE7388CF9C}.Debug|x64.ActiveCfg = Debug|Win32
+		{F1CF7143-338B-4A99-A13C-73DE7388CF9C}.Release|Win32.ActiveCfg = Release|Win32
+		{F1CF7143-338B-4A99-A13C-73DE7388CF9C}.Release|Win32.Build.0 = Release|Win32
+		{F1CF7143-338B-4A99-A13C-73DE7388CF9C}.Release|x64.ActiveCfg = Release|Win32
+		{0ADC0389-57B5-45FF-886B-022AECCD443B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0ADC0389-57B5-45FF-886B-022AECCD443B}.Debug|Win32.Build.0 = Debug|Win32
+		{0ADC0389-57B5-45FF-886B-022AECCD443B}.Debug|x64.ActiveCfg = Debug|Win32
+		{0ADC0389-57B5-45FF-886B-022AECCD443B}.Release|Win32.ActiveCfg = Release|Win32
+		{0ADC0389-57B5-45FF-886B-022AECCD443B}.Release|Win32.Build.0 = Release|Win32
+		{0ADC0389-57B5-45FF-886B-022AECCD443B}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

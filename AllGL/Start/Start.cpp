@@ -1,8 +1,17 @@
 // Start.cpp : 定义控制台应用程序的入口点。
+/*
+//绘制三角形和一条直线做圆周运动
+//绘制三棱锥
+//加载图片贴图
+*/
 #include "stdafx.h"
+#include <cmath>
 #include <GL/glew.h>
 #include <GL/glut.h>
+#include <GL/GLAux.h>
 #include <Windows.h>
+#include "Tool.h"
+//#pragma comment(lib,"legacy_stdio_definitions_lib")
 #define MAX_LOADSTRING 100
 
 // 全局变量: 
@@ -15,7 +24,7 @@ WCHAR szWindowClass[MAX_LOADSTRING] = TEXT("zuokanyoukan");            // 主窗口
 
 bool keys[256];//保存键盘按键的数组
 bool active = TRUE;
-bool fullscreen = TRUE;
+bool fullscreen = false;
 
 // 此代码模块中包含的函数的前向声明: 
 BOOL                InitInstance(HINSTANCE, int);
@@ -26,12 +35,17 @@ int InitGL(GLvoid);
 int DrawGLScene(GLvoid);
 GLvoid KillGLWindow(GLvoid);
 BOOL CreateGLWindow(int width, int height, int bits, bool fullscreenflag);
+void DrawTexture();
+void DrawMitsubishiCone();
+AUX_RGBImageRec* LoadBMP(WCHAR* Filename);
+int LoadGLTextures(int index, int &texture);
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPWSTR    lpCmdLine,
 	_In_ int       nCmdShow);
 int main(int argc,WCHAR* argv[]){
-	return wWinMain(GetModuleHandle(NULL), NULL, TEXT(""), TRUE);
+	int ret = wWinMain(GetModuleHandle(NULL), NULL, TEXT(""), TRUE);
+	exit(ret);
 }
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -44,13 +58,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// TODO: 在此放置代码。
 	hInst = hInstance;
 	// 初始化全局字符串
-	if (MessageBox(NULL, L"你想在全屏模式下运行么？", L"设置全屏模式", MB_YESNO | MB_ICONQUESTION) == IDNO){
+	/*if (MessageBox(NULL, L"你想在全屏模式下运行么？", L"设置全屏模式", MB_YESNO | MB_ICONQUESTION) == IDNO){
 		fullscreen = false;
-	}
+	}*/
 
-	HDC hdc = CreateDC(_T("display"), NULL, NULL, NULL);
-	int nBitsPerPixel = GetDeviceCaps(hdc, BITSPIXEL);
-	DeleteDC(hdc);
+	HDC dispalyhdc = CreateDC(_T("display"), NULL, NULL, NULL);//dispalyhdc
+	int nBitsPerPixel = GetDeviceCaps(dispalyhdc, BITSPIXEL);
+	DeleteDC(dispalyhdc);
+	dispalyhdc = NULL;
 	if (!CreateGLWindow(640, 480, nBitsPerPixel, fullscreen)) {
 		return 0;
 	}
@@ -77,7 +92,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 				}
 				else {
 					DrawGLScene();
-					SwapBuffers(hdc);
+					SwapBuffers(::hdc);
 				}
 			}
 			if (keys[VK_F1]) {
@@ -203,17 +218,199 @@ GLvoid ReSizeGLScene(GLsizei width, GLsizei height) {
 	glLoadIdentity();//重置模型观察矩阵
 }
 int InitGL(GLvoid) {
+	glEnable(GL_TEXTURE_2D);
 	glShadeModel(GL_SMOOTH);//启用阴影平滑
-	glClearColor(0.0, 0.0, 0.0, 0.0);//设置背景色
+	glClearColor(1.0, 1.0, 1.0, 0.0);//设置背景色
 	glClearDepth(1.0f);//设置深度缓存
 	glEnable(GL_DEPTH_TEST);//启用深度测试
 	glDepthFunc(GL_LEQUAL);//深度测试类型
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//对透视进行修正
 	return TRUE;
 }
-int DrawGLScene(GLvoid) {
+//绘制三角形和一条直线做圆周运动
+void DrawTRIANGLESAndLine()
+{
+#define UnitAngle (3.141592627/180)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//清除屏幕和深度缓存
+	glLoadIdentity();//重置当前模型观察矩阵
+	glTranslatef(-1.5f, 0.0f, -6.0f);
+	glBegin(GL_TRIANGLES);
+	glVertex3f(0, 1, 0);
+	glColor3f(1, 0, 0);
+	glVertex3f(-1, -1, 0);
+	glColor3f(0, 0, 1);
+	glVertex3f(1, -1, 0);
+	glColor3f(0, 0.85, 0);
+	glEnd();
+	static double i = 0;
+	glBegin(GL_LINES);
+	double x = 0.0;
+	double y = 0.0;
+	glVertex3f(2, 0, 0);
+	x = sin(i*UnitAngle);
+	y = cos(i*UnitAngle);
+	glVertex3f(x + 2, y, 0);
+	glColor3f(x, y, 1);
+	glEnd();
+	i += 0.15;
+	if (i > 360)
+		i = 0.0f;
+#undef UnitAngle
+}
+//绘制三棱锥
+void DrawMitsubishiCone()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//清除屏幕和深度缓存
+	glLoadIdentity();//重置当前模型观察矩阵
+	glTranslatef(-1.5f, 0.0f, -6.0f);
+	static double RotateAng = 0.0f;
+	glRotated(RotateAng, 1, 1, 0);
+	RotateAng += 0.15;
+	glBegin(GL_TRIANGLES);
+	glVertex3f(2.0f, 1.0f, 1.0f);
+	glVertex3f(1.0f, 2.0f, 0.5f);
+	glVertex3f(0.0f, 1.0f, 1.0f);
+	glColor3f(1, 0, 0);
+	//左侧
+	glVertex3f(0.0f, 1.0f, 1.0f);
+	glVertex3f(1.0f, 2.0f, 0.5f);
+	glVertex3f(1.0f, 0.5f, 0.0f);
+	glColor3f(1, 0, 1);
+	//右侧
+	glVertex3f(1.0f, 0.5f, 0.0f);
+	glVertex3f(1.0f, 2.0f, 0.5f);
+	glVertex3f(2.0f, 1.0f, 1.0f);
+	glColor3f(1, 1, 0);
+	//底部
+	glVertex3f(1.0f, 0.5f, 0.0f);
+	glVertex3f(2.0f, 1.0f, 1.0f);
+	glVertex3f(0.0f, 1.0f, 1.0f);
+	glColor3f(1, 1, 1);
+	glEnd();
+}
+#ifdef _UNICODE
+static FILE *fopen(wchar_t *filename, wchar_t *mode){
+	return ::fopen(TW2C(filename).c_str(),TW2C(mode).c_str());
+}
+#endif
+AUX_RGBImageRec* LoadBMP(WCHAR* Filename){
+	FILE *fp = fopen(Filename, TEXT("r"));
+	if (fp == NULL){
+		printf("文件打开失败");
+		return NULL;
+	}
+	fclose(fp);
+	return auxDIBImageLoad(Filename);
+}
+int LoadGLTextures(int index,int &texture){
+	static const WCHAR* filenames[] = { TEXT("test2.bmp"), TEXT("test1.bmp"),
+										TEXT("test.bmp"), TEXT("test3.bmp"),
+										TEXT("test3.bmp"), TEXT("test4.bmp"), TEXT("test5.bmp") };
+	if (index > 5 && index < 0)
+		return FALSE;
+	int Status = FALSE;
+	static GLuint textures[6] = {0};
+	if (textures[index] > 0){
+		texture = textures[index];
+		return TRUE;
+	}
+	AUX_RGBImageRec* TextureImages[1] = {NULL};
+	
+	TextureImages[0] = LoadBMP((WCHAR*)filenames[index]);
+	if (TextureImages[0]){
+		Status = TRUE;
+		GLuint arrtextres[] = { 0 };
+		glGenTextures(1, &arrtextres[0]);
+		glBindTexture(GL_TEXTURE_2D, arrtextres[0]);
+		glTexImage2D(GL_TEXTURE_2D, 0, 3, TextureImages[0]->sizeX, TextureImages[0]->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, TextureImages[0]->data);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		textures[index] = arrtextres[0];
+		texture = textures[index];
+	}
+	if (TextureImages[0]){
+		if (TextureImages[0]->data){
+			free(TextureImages[0]->data);
+		}
+		free(TextureImages[0]);
+		TextureImages[0] = NULL;
+	}
+	return Status;
+}
+void DrawTexture(){
+	static GLfloat xrot = 0;
+	static GLfloat yrot = 0;
+	static GLfloat zrot = 0;
+	static int texture = 0;
+	if (texture == 0){
+		if (LoadGLTextures(1, texture) == FALSE){
+			texture = -1;
+			return;
+		}
+	}
+	else if (texture == -1)
+		return;
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
+	glTranslatef(0, 0, -5);
+	glRotatef(xrot, 1, 0, 0);
+	glRotatef(yrot, 0, 1, 0);
+	glRotatef(zrot, 0, 0, 1);
+	glBegin(GL_TRIANGLES);
+	LoadGLTextures(1, texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glColor3f(1.0f, 0.0f, 0.0f);						// Red
+	glTexCoord2f(0, 1);
+	glVertex3f(0.0f, 1.0f, 0.0f);					// Top Of Triangle (Front)
+	glColor3f(0.0f, 1.0f, 0.0f);						// Green
+	glTexCoord2f(1, 1);
+	glVertex3f(-1.0f, -1.0f, 1.0f);					// Left Of Triangle (Front)
+
+	LoadGLTextures(2, texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	glColor3f(0.0f, 0.0f, 1.0f);						// Blue
+	glTexCoord2f(0.23, 0.75);
+	glVertex3f(1.0f, -1.0f, 1.0f);					// Right Of Triangle (Front)
+	glColor3f(1.0f, 0.0f, 0.0f);						// Red
+	glTexCoord2f(0.1, 1);
+	glVertex3f(0.0f, 1.0f, 0.0f);					// Top Of Triangle (Right)
+	glColor3f(0.0f, 0.0f, 1.0f);						// Blue
+
+	LoadGLTextures(3, texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	glTexCoord2f(1, 0);
+	glVertex3f(1.0f, -1.0f, 1.0f);					// Left Of Triangle (Right)
+	glColor3f(0.0f, 1.0f, 0.0f);						// Green
+	glTexCoord2f(0.33, 1);
+	glVertex3f(1.0f, -1.0f, -1.0f);					// Right Of Triangle (Right)
+	glColor3f(1.0f, 0.0f, 0.0f);						// Red
+	glTexCoord2f(0, 0.35);
+	glVertex3f(0.0f, 1.0f, 0.0f);					// Top Of Triangle (Back)
+	glColor3f(0.0f, 1.0f, 0.0f);						// Green
+	glTexCoord2f(0, 0.42);
+	glVertex3f(1.0f, -1.0f, -1.0f);					// Left Of Triangle (Back)
+	glColor3f(0.0f, 0.0f, 1.0f);						// Blue
+	glTexCoord2f(0, 0.88);
+	glVertex3f(-1.0f, -1.0f, -1.0f);					// Right Of Triangle (Back)
+	glColor3f(1.0f, 0.0f, 0.0f);						// Red
+	glTexCoord2f(0, 0.67);
+	glVertex3f(0.0f, 1.0f, 0.0f);					// Top Of Triangle (Left)
+	glColor3f(0.0f, 0.0f, 1.0f);						// Blue
+	glTexCoord2f(0.66, 1);
+	glVertex3f(-1.0f, -1.0f, -1.0f);					// Left Of Triangle (Left)
+	glColor3f(0.0f, 1.0f, 0.0f);						// Green
+	glTexCoord2f(0.21, 0.54);
+	glVertex3f(-1.0f, -1.0f, 1.0f);					// Right Of Triangle (Left)
+	glEnd();											// Done Drawing The Quad
+	xrot += 0.2f;
+	yrot += 0.3f;
+	zrot += 0.1f;
+}
+int DrawGLScene(GLvoid) {
+	//DrawMitsubishiCone();
+	DrawTexture();
 	return TRUE;
 }
 GLvoid KillGLWindow(GLvoid) {
@@ -282,7 +479,7 @@ BOOL CreateGLWindow(int width, int height, int bits, bool fullscreenflag) {
 		dmScreenSettings.dmBitsPerPel = bits;//每像素所选的色彩深度
 		dmScreenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
 		ErrorCode = GetLastError();
-		//尝试设置显示模式并返回结果 CDS_FULLSCREEN 移去状态条
+		
 		if (ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL) {
 			if (MessageBox(NULL, L"全屏模式在当前显卡上设置失败!\n使用窗口模式?", L"NeHe GL", MB_YESNO | MB_ICONINFORMATION)) {
 				fullscreen = false;
@@ -338,19 +535,19 @@ BOOL CreateGLWindow(int width, int height, int bits, bool fullscreenflag) {
 		0,//Reserved
 		0, 0, 0//忽略层遮罩
 	};
-	if (!(hdc = GetDC(hwnd))) {
+	if (!(::hdc = GetDC(hwnd))) {
 		KillGLWindow();
 		MessageBox(NULL, L"不能创建一种相匹配的像素格式", L"错误", MB_OK | MB_ICONINFORMATION);
 		return false;
 	}
 	//windows找相应的像素格式
-	if (!(PixelFormat = ChoosePixelFormat(hdc, &pfd))) {
+	if (!(PixelFormat = ChoosePixelFormat(::hdc, &pfd))) {
 		ErrorCode = GetLastError();
 		KillGLWindow();
 		MessageBox(NULL, L"不能找到像素格式", L"错误", MB_OK | MB_ICONINFORMATION);
 		return FALSE;
 	}
-	if (!SetPixelFormat(hdc, PixelFormat, &pfd)) {//设置像素格式
+	if (!SetPixelFormat(::hdc, PixelFormat, &pfd)) {//设置像素格式
 		ErrorCode = GetLastError();
 		KillGLWindow();
 		MessageBox(NULL, L"不能设置像素格式", L"错误", MB_OK | MB_ICONINFORMATION);
@@ -358,13 +555,13 @@ BOOL CreateGLWindow(int width, int height, int bits, bool fullscreenflag) {
 	}
 
 
-	if (!(hrc = wglCreateContext(hdc))) {
+	if (!(hrc = wglCreateContext(::hdc))) {
 		ErrorCode = GetLastError();
 		KillGLWindow();
 		MessageBox(NULL, L"不能创建OpenGL渲染描述表", L"错误", MB_OK | MB_ICONINFORMATION);
 		return false;
 	}
-	if (!wglMakeCurrent(hdc, hrc)) {
+	if (!wglMakeCurrent(::hdc, hrc)) {
 		ErrorCode = GetLastError();
 		KillGLWindow();
 		MessageBox(NULL, L"不能激活OpenGL渲染描述表", L"错误", MB_OK | MB_ICONINFORMATION);
