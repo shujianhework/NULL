@@ -8,20 +8,40 @@
 #include <GL/GLAux.h>
 #include <Windows.h>
 #include "../Start/Tool.h"
+void DefinesPublis(){
+#define KeyIFOperIndex(Condition,Index,NewAddValue) \
+if(Condition){\
+	GLfloat value = 0;\
+	Quete(value,Index,false);\
+	value+=NewAddValue;\
+	Quete(value,Index,true);\
+}
+}
 void DefinesInLight(){//不是用来调用的
 	if (true)
 		return;
-	#define MAX_LOADSTRING 100
-	#define XROT 0
-	#define YROT 1
-	#define XSPEED 2
-	#define YSPEED 3
-	#define Z 4
-	#define LightAmbient 5
-	#define LightDiffuse 9
-	#define LightPosition 13
-	#define Filter 0
-	#define Textures 1
+#define MAX_LOADSTRING 100
+	//float double
+#define XROT 0
+#define YROT 1
+#define XSPEED 2
+#define YSPEED 3
+#define Z 4
+#define LightAmbient 5
+#define LightDiffuse 9
+#define LightPosition 13
+	//int
+#define Filter 0
+#define Textures 1
+#define LP 4
+#define FP 5
+#define LIGHT 6
+}
+void DefineInBlend(){
+	if (true)
+		return;
+#define BLEND	7
+#define BP		8
 }
 // 全局变量: 
 HGLRC hrc = NULL;//窗口着色描述表句柄
@@ -30,9 +50,7 @@ HWND hwnd = NULL;
 HINSTANCE hInst;                                // 当前实例
 WCHAR szTitle[MAX_LOADSTRING] = TEXT("左看右看");                  // 标题栏文本
 WCHAR szWindowClass[MAX_LOADSTRING] = TEXT("zuokanyoukan");            // 主窗口类名
-BOOL light;
-BOOL lp;
-BOOL rp;
+
 bool keys[256];//保存键盘按键的数组
 bool active = TRUE;
 bool fullscreen = false;
@@ -91,6 +109,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	MSG msg;
 	BOOL done = false;
+	GLuint tempvalue = 0;
+	GLfloat fvaluez = 0;
+	GLfloat fvaluex = 0;
+	GLfloat fvaluey = 0;
 	// 主消息循环: 
 	while (!done) {
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
@@ -110,6 +132,61 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 				else {
 					DrawGLScene();
 					SwapBuffers(::hdc);
+					QueteUINT(tempvalue, LP,false);
+					if (keys['L'] && !tempvalue){
+						tempvalue = 1;
+						QueteUINT(tempvalue, LP, true);
+						QueteUINT(tempvalue, LIGHT, false);
+						if (!tempvalue){
+							glDisable(GL_LIGHTING);
+						}
+						else
+							glEnable(GL_LIGHTING);
+					}
+					if (!keys['L']){
+						tempvalue = 0;
+						QueteUINT(tempvalue, LP, true);
+					}
+					QueteUINT(tempvalue, FP, false);
+					if (keys['F'] && !tempvalue){
+						tempvalue = 1;
+						QueteUINT(tempvalue, FP, true);
+						QueteUINT(tempvalue, Filter, false);
+						tempvalue += 1;
+						if (tempvalue > 2)
+							tempvalue = 1;
+						QueteUINT(tempvalue, Filter, true);
+					}
+					if (!keys['F']){
+						tempvalue = 0;
+						QueteUINT(tempvalue, FP, true);
+					}
+					QueteUINT(tempvalue, BP, false);
+					if (keys['B'] && !tempvalue){
+						tempvalue = 1;
+						QueteUINT(tempvalue, BP, true);
+						QueteUINT(tempvalue, BLEND, false);
+						tempvalue = !tempvalue;
+						if (tempvalue){
+							glEnable(GL_BLEND);
+							glDisable(GL_DEPTH_TEST);
+						}
+						else{
+							glDisable(GL_BLEND);
+							glEnable(GL_DEPTH_TEST);
+						}
+						QueteUINT(tempvalue, BLEND, true);
+					}
+					if (!keys['B']){
+						tempvalue = 0;
+						QueteUINT(tempvalue, BP, true);
+					}
+					KeyIFOperIndex(keys[VK_PRIOR], Z, -0.02);
+					KeyIFOperIndex(keys[VK_NEXT], Z, 0.02);
+					KeyIFOperIndex(keys[VK_UP], XSPEED, -0.01);
+					KeyIFOperIndex(keys[VK_DOWN], XSPEED, 0.01);
+					KeyIFOperIndex(keys[VK_RIGHT], YSPEED, 0.01);
+					KeyIFOperIndex(keys[VK_LEFT], YSPEED, -0.01);
 				}
 			}
 			if (keys[VK_F1]) {
@@ -238,15 +315,20 @@ int InitGLInLight(){
 	glEnable(GL_LIGHT1);
 	return true;
 }
+void InitGLInBlend(){
+}
 int InitGL(GLvoid) {
 	glEnable(GL_TEXTURE_2D);
 	glShadeModel(GL_SMOOTH);//启用阴影平滑
-	glClearColor(0.0, 0.0, 0.0, 0.0);//设置背景色
+	glClearColor(0.0, 0.0, 0.0, 0.5);//背景色
 	glClearDepth(1.0f);//设置深度缓存
 	glEnable(GL_DEPTH_TEST);//启用深度测试
 	glDepthFunc(GL_LEQUAL);//深度测试类型
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//对透视进行修正
 	InitGLInLight();
+	InitGLInBlend();
+	glColor4f(0.25f, 1.0f, 0.82f, 0.5);//全亮 半透明
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);//基于源像素alpha通道的半透明混合函数
 	return TRUE;
 }
 int DrawGLScene(GLvoid) {
@@ -465,7 +547,7 @@ int LoadGLTexture(){
 	AUX_RGBImageRec* TextureImage[1] = { 0 };
 	memset(TextureImage, 0, sizeof(void*));
 	GLuint texture[3];//3种纹理的存储空间
-	if (TextureImage[0] = LoadBMP(TEXT(""))){
+	if (TextureImage[0] = LoadBMP(TEXT("Glass.bmp"))){
 		State = TRUE;
 		glGenTextures(3, &texture[0]);
 		//创建 Nearest滤波贴图
@@ -515,6 +597,9 @@ void DrawInitLithtValues(){
 	Quete(2, LightPosition + 2);
 	Quete(1, LightPosition + 3);
 
+	GLfloat tempvalues = 0.21;
+	Quete(tempvalues, XSPEED, true);
+	Quete(tempvalues, YSPEED, true);
 	QueteUINT(0, Filter);
 	LoadGLTexture();
 }
@@ -533,5 +618,77 @@ void DrawLight(){
 	QueteUINT(uvalue, Textures + uvalue, false);
 	glBindTexture(GL_TEXTURE_2D, uvalue);
 	glBegin(GL_QUADS);
+
+	//前侧面
+	glNormal3f(0, 0, 1);//法线向观察者
+	glTexCoord2f(0, 0);
+	glVertex3f(-1, -1, 1);
+	glTexCoord2f(1, 0);
+	glVertex3f(1, -1, 1);
+	glTexCoord2f(1, 1);
+	glVertex3f(1, 1, 1);
+	glTexCoord2f(0, 1);
+	glVertex3f(-1, 1, 1);
+	
+	//后侧面
+	glNormal3f(0, 0, -1);//法线背观察者
+	glTexCoord2f(1, 0);
+	glVertex3f(-1, -1, -1);
+	glTexCoord2f(1, 1);
+	glVertex3f(-1, 1, -1);
+	glTexCoord2f(0, 1);
+	glVertex3f(1, 1, -1);
+	glTexCoord2f(0, 0);
+	glVertex3f(1, -1, -1);
+
+	//顶面
+	glNormal3f(0, 1, 0);//法线向上
+	glTexCoord2f(0, 1);
+	glVertex3f(-1, 1, -1);
+	glTexCoord2f(0, 0);
+	glVertex3f(-1, 1, 1);
+	glTexCoord2f(1, 0);
+	glVertex3f(1, 1, 1);
+	glTexCoord2f(1, 1);
+	glVertex3f(1, 1, -1);
+
+	//底面
+	glNormal3f(0, -1, 0);//法线向下
+	glTexCoord2f(1, 1);
+	glVertex3f(-1, -1, -1);
+	glTexCoord2f(0, 1);
+	glVertex3f(1, -1, -1);
+	glTexCoord2f(0, 0);
+	glVertex3f(1, -1, 1);
+	glTexCoord2f(1,0);
+	glVertex3f(-1, -1, 1);
+
+	//右侧面
+	glNormal3f(1, 0, 0);//法线向右
+	glTexCoord2f(1, 0);
+	glVertex3f(1, -1, -1);
+	glTexCoord2f(1, 1);
+	glVertex3f(1, -1, 1);
+	glTexCoord2f(0, 1);
+	glVertex3f(1, 1, 1);
+	glTexCoord2f(0, 0);
+	glVertex3f(1, 1, -1);
+
+	//左侧面
+	glNormal3f(-1, 0, 0);
+	glTexCoord2f(0, 0);
+	glVertex3f(-1, -1, -1);
+	glTexCoord2f(1, 0);
+	glVertex3f(-1, -1, 1);
+	glTexCoord2f(1,1);
+	glVertex3f(-1, 1, 1);
+	glTexCoord2f(0, 1);
+	glVertex3f(-1, 1, -1);
 	glEnd();
+	Quete(value, XSPEED, false);
+	xrot += value;
+	Quete(xrot, XROT, true);
+	Quete(value, YSPEED, false);
+	yrot += value;
+	Quete(yrot, YROT, true);
 }

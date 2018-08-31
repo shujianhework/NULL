@@ -1,0 +1,16 @@
+/AllGL/Start/Release
+Release
+/AllGL/glew/bin/Release
+/AllGL/glew/build/vc12/tmp
+*.tlog
+*.log
+*.exe
+*.ilk
+*.pdb
+*.obj
+*.ipch
+*.filters
+*.idb
+*.pch
+*.user
+*.opensdf
