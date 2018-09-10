@@ -15,7 +15,8 @@ struct AppFrameBackData
 		MessageNotify,
 		GLInit,
 		GLKeyBoard,
-		GLDraw
+		GLDraw,
+		Idle,
 	}Type;
 	union MyUnion
 	{
@@ -44,6 +45,7 @@ private:
 	bool keys[256];//保存键盘按键的数组
 	bool active;
 	AppFrameBackData DynamicParamData;
+	bool StopFlg;
 private:
 	AppFrame();
 	~AppFrame();
@@ -67,4 +69,10 @@ public:
 	}
 	bool Start();
 	LRESULT LoopWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+	inline void Stop(){
+		StopFlg = true;
+	}
+	inline bool FindKey(unsigned char index){
+		return keys[index];
+	}
 };

@@ -9,11 +9,11 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <GL/GLAux.h>
+#include <stdio.h>
+#include <stdlib.h>
 #if _UNICODE
 #define WCHARS std::wstring
-FILE *fopen(wchar_t *filename, wchar_t *mode){
-	return ::fopen(TW2C(filename).c_str(), TW2C(mode).c_str());
-}
+FILE *fopen(wchar_t *filename, wchar_t *mode);
 #else
 #define WCHARS std::string
 #endif
@@ -34,13 +34,17 @@ private:
 private:
 	std::map<WCHARS, std::list<TextureData*>*> textures;
 	TextureData tempTextureData;
+	static Textures* __insta;
 private:
 	Textures();
 	~Textures();
 	TextureData* CreateTextureData(WCHAR* path, std::function<void(AUX_RGBImageRec)> back);
-	unsigned int GetTextureData(WCHAR* path, TextureFilterType tft, std::function<void(AUX_RGBImageRec)> back = nullptr);
+	unsigned int GetTextureData(WCHAR* path, TextureFilterType tft, std::function<void(AUX_RGBImageRec)> back);
 public:
 	unsigned int GetTextureData(WCHAR *path, TextureFilterType tft);
-	static Textures* getInstance();
+	static Textures* getInstance(){
+		__insta = __insta ? __insta : new Textures;
+		return __insta;
+	}
 };
 

@@ -3,7 +3,7 @@
 #include <Windows.h>
 AppFrame *AppFrame::instan = NULL;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-AppFrame::AppFrame() :Notify(nullptr), fullscreen(false), szWindowClass(TEXT("zuokanyoukan")), szTitle(TEXT("测试窗口"))
+AppFrame::AppFrame() :Notify(nullptr), fullscreen(false), szWindowClass(TEXT("zuokanyoukan")), szTitle(TEXT("测试窗口")), StopFlg(true)
 {
 	HDC dispalyhdc = CreateDC(_T("display"), NULL, NULL, NULL);
 	int nBitsPerPixel = GetDeviceCaps(dispalyhdc, BITSPIXEL);
@@ -28,9 +28,6 @@ bool AppFrame::FullDynamicParamSendData(AppFrameBackData::APBDType type, WCHAR *
 	return this->Notify(DynamicParamData);
 }
 bool AppFrame::FullDynamicParamSendData(int data){
-	/*DynamicParamData.Type = AppFrameBackData::GLInit;
-	DynamicParamData.Data.Null = 0;
-	return this->Notify(DynamicParamData);*/
 	return false;
 }
 bool AppFrame::FullDynamicParamSendData(WCHAR *p){
@@ -47,21 +44,21 @@ bool AppFrame::FullDynamicParamSendData(unsigned char index, bool down){
 bool AppFrame::Start(){
 	if (Notify == nullptr)
 		return false;
-	if (MessageBox(NULL, L"你想在全屏模式下运行么？", L"设置全屏模式", MB_YESNO | MB_ICONQUESTION) == IDNO){
+	/*if (MessageBox(NULL, L"你想在全屏模式下运行么？", L"设置全屏模式", MB_YESNO | MB_ICONQUESTION) == IDNO){
 		fullscreen = false;
 	}
-	
+	*/
 	if (!CreateGLWindow(640, 480, nBitsPerPixel, fullscreen)) {
 		return false;
 	}
 	FullDynamicParamSendData(AppFrameBackData::APBDType::GLInit, TEXT(""));
 	ShowWindow(hwnd, true);
 	MSG msg;
-	BOOL done = false;
-	while (!done) {
+	StopFlg = false;
+	while (!StopFlg) {
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
 			if (msg.message == WM_QUIT) {
-				done = true;
+				StopFlg = true;
 			}
 			else {
 				TranslateMessage(&msg);
@@ -70,24 +67,16 @@ bool AppFrame::Start(){
 		}
 		else {
 			if (active) {
-				if (keys[VK_ESCAPE]) {
-					done = true;
+				if (StopFlg == true) {
+					break;
 				}
 				else {
-					//DrawGLScene();
 					FullDynamicParamSendData();
 					SwapBuffers(hdc);
 				}
 			}
-			if (keys[VK_F1]) {
-				keys[VK_F1] = false;
-				KillGLWindow();
-				fullscreen = !fullscreen;
-				if (!CreateGLWindow(640, 480, 16, fullscreen)) {
-					return 0;
-				}
-			}
 		}
+		FullDynamicParamSendData(AppFrameBackData::Idle,L"");
 	}
 	KillGLWindow();
 	return true;
@@ -152,9 +141,6 @@ BOOL AppFrame::CreateGLWindow(int width, int height, int bits, bool fullscreenfl
 		dwStyle = WS_OVERLAPPEDWINDOW;
 	}
 	AdjustWindowRectEx(&WindowRect, dwStyle, FALSE, dwExStyle);//调整窗口达到真正要求大小
-	// 
-	//WS_CHILDWINDOW
-	//
 	hwnd = CreateWindowEx(dwExStyle, szWindowClass, szTitle, dwStyle | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, 0, 0, WindowRect.right - WindowRect.left, WindowRect.bottom - WindowRect.top, NULL, NULL, hInst, NULL);
 	if (!hwnd){
 		ErrorCode = GetLastError();
@@ -264,7 +250,6 @@ GLvoid AppFrame::ReSizeGLScene(GLsizei width, GLsizei height) {
 	glLoadIdentity();//重置模型观察矩阵
 }
 int AppFrame::InitGL(GLvoid) {
-	glEnable(GL_TEXTURE_2D);
 	glShadeModel(GL_SMOOTH);//启用阴影平滑
 	glClearColor(0.0, 0.0, 0.0, 0.0);//设置背景色
 	glClearDepth(1.0f);//设置深度缓存
@@ -300,16 +285,16 @@ LRESULT AppFrame::LoopWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 		return 0;
 	}
 	case WM_DESTROY:
-		keys[VK_ESCAPE] = true;
+		StopFlg = true;
 		break;
 	case WM_KEYDOWN: {
-		if(true == this->FullDynamicParamSendData((unsigned char)wParam, true))
-			keys[wParam] = true;
+		keys[wParam] = true;
+		this->FullDynamicParamSendData((unsigned char)wParam, true);
 		return 0;
 	}
 	case WM_KEYUP: {
-		if(this->FullDynamicParamSendData((unsigned char)wParam, false))
-			keys[wParam] = false;
+		keys[wParam] = false;
+		this->FullDynamicParamSendData((unsigned char)wParam, false);
 		return 0;
 	}
 	case WM_SIZE:
