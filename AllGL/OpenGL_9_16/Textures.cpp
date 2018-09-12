@@ -271,7 +271,7 @@ Textures::~Textures()
 	}
 	textures.clear();	
 }
-Textures::TextureData* Textures::CreateTextureData(WCHAR* path, std::function<void(AUX_RGBImageRec)> back){
+Textures::TextureData* Textures::CreateTextureData(TCHAR* path, std::function<void(AUX_RGBImageRec)> back){
 	FILE *fp = fopen(path, TEXT("r"));
 	if (fp == NULL){
 		printf("文件打开失败");
@@ -284,7 +284,7 @@ Textures::TextureData* Textures::CreateTextureData(WCHAR* path, std::function<vo
 	memcpy(data, &tempTextureData, sizeof(TextureData));
 	return data;
 }
-unsigned int Textures::GetTextureData(WCHAR *path, TextureFilterType tft){
+unsigned int Textures::GetTextureData(TCHAR *path, TextureFilterType tft){
 	return GetTextureData(path,tft, [&](AUX_RGBImageRec image){
 		tempTextureData.FilterType = tft;
 		glBindTexture(GL_TEXTURE_2D, tempTextureData.Id);
@@ -306,7 +306,7 @@ unsigned int Textures::GetTextureData(WCHAR *path, TextureFilterType tft){
 		glTexImage2D(GL_TEXTURE_2D, 0, 3, image.sizeX, image.sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, image.data);
 	});
 }
-unsigned int Textures::GetTextureData(WCHAR *path, TextureFilterType tft, std::function<void(AUX_RGBImageRec)> back){
+unsigned int Textures::GetTextureData(TCHAR *path, TextureFilterType tft, std::function<void(AUX_RGBImageRec)> back){
 	auto iter = textures.find(path);
 	TextureData *tdata = NULL;
 	unsigned int ErrorIdFlg = -1;

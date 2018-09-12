@@ -22,7 +22,7 @@ bool AppFrame::FullDynamicParamSendData(){
 	DynamicParamData.Data.Null = 0;
 	return this->Notify(DynamicParamData);
 }
-bool AppFrame::FullDynamicParamSendData(AppFrameBackData::APBDType type, WCHAR *p){
+bool AppFrame::FullDynamicParamSendData(AppFrameBackData::APBDType type, TCHAR *p){
 	DynamicParamData.Type = type;
 	DynamicParamData.Data.c = p;
 	return this->Notify(DynamicParamData);
@@ -30,7 +30,7 @@ bool AppFrame::FullDynamicParamSendData(AppFrameBackData::APBDType type, WCHAR *
 bool AppFrame::FullDynamicParamSendData(int data){
 	return false;
 }
-bool AppFrame::FullDynamicParamSendData(WCHAR *p){
+bool AppFrame::FullDynamicParamSendData(TCHAR *p){
 	DynamicParamData.Type = AppFrameBackData::ErrorLog;
 	DynamicParamData.Data.c = p;
 	return this->Notify(DynamicParamData);
@@ -76,7 +76,7 @@ bool AppFrame::Start(){
 				}
 			}
 		}
-		FullDynamicParamSendData(AppFrameBackData::Idle,L"");
+		FullDynamicParamSendData(AppFrameBackData::Idle, TEXT(""));
 	}
 	KillGLWindow();
 	return true;
@@ -84,7 +84,7 @@ bool AppFrame::Start(){
 BOOL AppFrame::CreateGLWindow(int width, int height, int bits, bool fullscreenflag) {
 	GLuint PixelFormat = 0;//保存匹配查找结果
 	int ErrorCode = 0;
-	WNDCLASSEXW wcex;
+	WNDCLASSEX wcex;
 
 	wcex.cbSize = sizeof(WNDCLASSEX);
 

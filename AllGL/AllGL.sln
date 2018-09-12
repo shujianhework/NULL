@@ -26,6 +26,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OtherTest", "OtherTest\Othe
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGL_9_16", "OpenGL_9_16\OpenGL_9_16.vcxproj", "{C58F5BC1-9FE8-4F13-8C62-298D08494966}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PreprocessingHead", "PreprocessingHead\PreprocessingHead.vcxproj", "{1379BA8D-7312-4D3C-BC46-FE45A522BD7C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -80,6 +82,12 @@ Global
 		{C58F5BC1-9FE8-4F13-8C62-298D08494966}.Release|Win32.ActiveCfg = Release|Win32
 		{C58F5BC1-9FE8-4F13-8C62-298D08494966}.Release|Win32.Build.0 = Release|Win32
 		{C58F5BC1-9FE8-4F13-8C62-298D08494966}.Release|x64.ActiveCfg = Release|Win32
+		{1379BA8D-7312-4D3C-BC46-FE45A522BD7C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1379BA8D-7312-4D3C-BC46-FE45A522BD7C}.Debug|Win32.Build.0 = Debug|Win32
+		{1379BA8D-7312-4D3C-BC46-FE45A522BD7C}.Debug|x64.ActiveCfg = Debug|Win32
+		{1379BA8D-7312-4D3C-BC46-FE45A522BD7C}.Release|Win32.ActiveCfg = Release|Win32
+		{1379BA8D-7312-4D3C-BC46-FE45A522BD7C}.Release|Win32.Build.0 = Release|Win32
+		{1379BA8D-7312-4D3C-BC46-FE45A522BD7C}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

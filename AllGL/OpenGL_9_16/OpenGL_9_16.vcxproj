@@ -20,7 +20,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -43,6 +43,7 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)\glew\include;$(SolutionDir)\PublicOtherLibH\png\;$(SolutionDir)\PublicOtherLibH\zlib\;$(IncludePath);</IncludePath>
     <LibraryPath>$(SolutionDir)\bin\$(Configuration)\$(PlatformName);$(SolutionDir)\bin\Public;$(SolutionDir)\bin\Public\png;$(LibraryPath)</LibraryPath>
+    <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -62,6 +63,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glaux.lib;libpng.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>PreprocessingHead.exe H=LearningUnit.h D=UNIT_N P=LearningUnit/%%d.hpp CD=CLASSNAME C=Unit_%%d</Command>
+      <Message>
+      </Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -96,6 +102,9 @@
     <ClInclude Include="FNode.h" />
     <ClInclude Include="LearningUnit.h" />
     <ClInclude Include="LearningUnit\10.hpp" />
+    <ClInclude Include="LearningUnit\11.hpp" />
+    <ClInclude Include="LearningUnit\12.hpp" />
+    <ClInclude Include="LearningUnit\13.hpp" />
     <ClInclude Include="LearningUnit\9.hpp" />
     <ClInclude Include="Size.h" />
     <ClInclude Include="stdafx.h" />

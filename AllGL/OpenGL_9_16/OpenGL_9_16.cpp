@@ -17,23 +17,26 @@
 #include "AppFrame.h"
 #include "Textures.h"
 #include "LearningUnit.h"
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
-	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ LPWSTR    lpCmdLine,
-	_In_ int       nCmdShow);
 unsigned int iaTextrus[100] = { 0 };
-int main(int argc, WCHAR* argv[]){
-	int ret = wWinMain(GetModuleHandle(NULL), NULL, TEXT(""), TRUE);
-	exit(ret);
-}
+int main(int argc, WCHAR* argv[]);
 int flg = (int)setlocale(LC_ALL, "");
-
+#ifdef _UNICODE
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPWSTR    lpCmdLine,
+#else
+#define AL 1
+#define FL HI_##AL
+struct HI_1{
+	int a;
+};
+int APIENTRY WinMain(_In_ HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_ LPSTR    lpCmdLine,
+#endif
 	_In_ int       nCmdShow)
 {
-	
+
 	AppFrame *app = AppFrame::getInstance();
 	LearningUnit *logic = GetLearningUnit();
 	app->setNotify([&](AppFrameBackData data){
@@ -64,4 +67,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	app->Start();
 	FreeLearningUnit();
 	return true;
+}
+int main(int argc, WCHAR* argv[]){
+#ifdef _UNICODE
+	int ret = wWinMain(GetModuleHandle(NULL), NULL, TEXT(""), TRUE);
+#else
+	int ret = WinMain(GetModuleHandle(NULL), NULL, TEXT(""), TRUE);
+#endif
+	exit(ret);
 }

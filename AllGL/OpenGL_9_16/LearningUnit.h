@@ -1,5 +1,5 @@
 #pragma once
-#define UNIT_N 10
+#define UNIT_N 14
 
 #include <GL/glew.h>
 #include <GL/glut.h>

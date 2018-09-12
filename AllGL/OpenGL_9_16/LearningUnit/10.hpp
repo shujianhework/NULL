@@ -3,9 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#ifndef CLASSNAME
-#define CLASSNAME new Unit_10();
-#endif
 class Unit_10:public LearningUnit
 {
 	typedef struct tagVERTEX{//¶¥µã½á¹¹

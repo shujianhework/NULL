@@ -20,7 +20,7 @@ struct AppFrameBackData
 	}Type;
 	union MyUnion
 	{
-		WCHAR *c;
+		TCHAR *c;
 		int Null;
 		struct 
 		{
@@ -40,8 +40,8 @@ private:
 	HGLRC hrc;// = NULL;//窗口着色描述表句柄
 	HDC hdc;// = NULL;//OpenGL渲染描述表句柄
 	HWND hwnd;// = NULL;                          // 当前实例
-	WCHAR *szTitle;// = TEXT("左看右看");                  // 标题栏文本
-	WCHAR *szWindowClass;// = TEXT("zuokanyoukan");            // 主窗口类名
+	TCHAR *szTitle;// = TEXT("左看右看");                  // 标题栏文本
+	TCHAR *szWindowClass;// = TEXT("zuokanyoukan");            // 主窗口类名
 	bool keys[256];//保存键盘按键的数组
 	bool active;
 	AppFrameBackData DynamicParamData;
@@ -49,10 +49,10 @@ private:
 private:
 	AppFrame();
 	~AppFrame();
-	bool FullDynamicParamSendData(AppFrameBackData::APBDType type, WCHAR *p);
+	bool FullDynamicParamSendData(AppFrameBackData::APBDType type, TCHAR *p);
 	bool FullDynamicParamSendData();
 	bool FullDynamicParamSendData(int data);
-	bool FullDynamicParamSendData(WCHAR *p);
+	bool FullDynamicParamSendData(TCHAR *p);
 	bool FullDynamicParamSendData(unsigned char index, bool down);
 	BOOL CreateGLWindow(int width, int height, int bits, bool fullscreenflag);
 	void ReSizeGLScene(GLsizei width, GLsizei height);
@@ -74,5 +74,8 @@ public:
 	}
 	inline bool FindKey(unsigned char index){
 		return keys[index];
+	}
+	inline HDC getDC(){
+		return this->hdc;
 	}
 };

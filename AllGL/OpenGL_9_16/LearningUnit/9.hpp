@@ -3,9 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#ifndef CLASSNAME
-#define CLASSNAME new Unit_9();
-#endif
 class Unit_9:public LearningUnit
 {
 

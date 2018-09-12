@@ -1,12 +1,8 @@
 #include "stdafx.h"
 #include "LearningUnit.h"
-
-#if UNIT_N == 9
-#include "LearningUnit\9.hpp"
-#elif UNIT_N == 10
-#include "LearningUnit\10.hpp"
-#else
-#endif
+#include "LearningUnit/13.hpp"
+#define CLASSNAME new Unit_13()
+#include "LearningUnit.h"
 LearningUnit::LearningUnit():iaTextrus(1000){}
 LearningUnit::~LearningUnit(){}
 static LearningUnit *LU = NULL;
