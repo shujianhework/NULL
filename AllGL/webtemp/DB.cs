@@ -4,6 +4,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
+/*
+使用方式
+Dictionary<string, object> data = new Dictionary<string, object>();
+            string strcon = "Data Source=127.0.0.1;Initial Catalog=ply_web;User ID=sa;Password=shu110";
+            Action<string,object> back = delegate(string s,object o){
+                Console.WriteLine("Key = "+s+"\t\t Type = "+o.GetType().ToString() + "\t\t Value = "+o.ToString());
+            };
+            //DB.select(strcon,"select * from Area",back);
+            //bool ret = DB.delete(strcon, "delete Area where areaid=12354");
+            //Console.WriteLine("修改数据执行结果：" + (ret ? "成功" : "失败"));
+            Dictionary<string, object> idt = new Dictionary<string, object>();
+            Dictionary<string, object> odt = new Dictionary<string, object>();
+            idt["@prvev"] = 100;
+            idt["@nextv"] = 200;
+            odt["@Add"] = 0;
+            odt["@Sub"] = 0;
+            odt["@Mul"] = 0;
+            var dt = DB.ExcuteProc(strcon, "MathTest",idt,odt);
+            foreach (var item in dt)
+            {
+                Console.WriteLine("Key = " + item.Key + "\t\t Type = " + item.Value.GetType().ToString() + "\t\t Value = " + item.Value.ToString());
+            }
+            int a = Console.Read();
+*/
 namespace CJKOther
 {
     class DB
