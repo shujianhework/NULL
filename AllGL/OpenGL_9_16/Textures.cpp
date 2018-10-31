@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Textures.h"
+#include "BMPFile.h"
 //#include "../PublicOtherLibH/png/png.h"
 //#pragma comment(lib,"")
 #ifdef aaa
@@ -271,6 +272,8 @@ Textures::~Textures()
 	}
 	textures.clear();	
 }
+//#define USERSYSTEM
+#ifdef USERSYSTEM
 Textures::TextureData* Textures::CreateTextureData(TCHAR* path, std::function<void(AUX_RGBImageRec)> back){
 	FILE *fp = fopen(path, TEXT("r"));
 	if (fp == NULL){
@@ -284,6 +287,31 @@ Textures::TextureData* Textures::CreateTextureData(TCHAR* path, std::function<vo
 	memcpy(data, &tempTextureData, sizeof(TextureData));
 	return data;
 }
+#else
+Textures::TextureData* Textures::CreateTextureData(TCHAR* path, std::function<void(AUX_RGBImageRec)> back){
+	FILE *fp = fopen(path, TEXT("r"));
+	if (fp == NULL){
+		printf("文件打开失败");
+		return NULL;
+	}
+	fclose(fp);
+
+	AUX_RGBImageRec ari = { 0 };// auxDIBImageLoad(path);
+	HHF::BMPFile *bmp = (HHF::BMPFile *)HHF::SystemFile::Open(path);
+	if (bmp == NULL)
+		return NULL;
+	ari.data = bmp->getImageData();
+	ari.sizeX = bmp->getwidth(); 
+	ari.sizeY = bmp->getheight();
+	back(ari);
+	Sleep(25);
+	delete bmp;
+	bmp = NULL;
+	TextureData *data = new TextureData();
+	memcpy(data, &tempTextureData, sizeof(TextureData));
+	return data;
+}
+#endif
 unsigned int Textures::GetTextureData(TCHAR *path, TextureFilterType tft){
 	return GetTextureData(path,tft, [&](AUX_RGBImageRec image){
 		tempTextureData.FilterType = tft;

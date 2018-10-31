@@ -9,6 +9,7 @@ AppFrame::AppFrame() :Notify(nullptr), fullscreen(false), szWindowClass(TEXT("zu
 	int nBitsPerPixel = GetDeviceCaps(dispalyhdc, BITSPIXEL);
 	DeleteDC(dispalyhdc);
 	dispalyhdc = NULL;
+	//DWORD
 	hInst = GetModuleHandle(NULL);
 }
 

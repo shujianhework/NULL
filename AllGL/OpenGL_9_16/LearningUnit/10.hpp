@@ -61,7 +61,8 @@ public:
 void Unit_10::OnInit(){
 	SetupWorld();
 	Textures *texturesp = Textures::getInstance();
-	iaTextrus[0] = texturesp->GetTextureData(TEXT("Data/Mud.bmp"), TextureFilterType::TFT_LINEAR);
+	iaTextrus[0] = texturesp->GetTextureData(TEXT("Data/Tim.bmp"), TextureFilterType::TFT_LINEAR);
+	//iaTextrus[0] = texturesp->GetTextureData(TEXT("Data/Mud.bmp"), TextureFilterType::TFT_LINEAR);
 	if (iaTextrus[0] == -1)
 		printf("º”‘ÿŒ∆¿Ì ß∞‹");
 	glEnable(GL_TEXTURE_2D);

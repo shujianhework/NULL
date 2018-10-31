@@ -17,6 +17,7 @@
 #include "AppFrame.h"
 #include "Textures.h"
 #include "LearningUnit.h"
+#include "SystemFile.h"
 unsigned int iaTextrus[100] = { 0 };
 int main(int argc, WCHAR* argv[]);
 int flg = (int)setlocale(LC_ALL, "");
@@ -66,6 +67,14 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance,
 	});
 	app->Start();
 	FreeLearningUnit();
+	/*std::string tempstr = "Data/Tim.bmp";
+	using namespace HHF;
+	SystemFile* sf = SystemFile::Open(tempstr);
+	if (sf){
+		sf->GetBuffer();
+		delete sf;
+	}
+	sf = NULL;*/
 	return true;
 }
 int main(int argc, WCHAR* argv[]){
