@@ -110,6 +110,8 @@
     <ClInclude Include="LearningUnit\11.hpp" />
     <ClInclude Include="LearningUnit\12.hpp" />
     <ClInclude Include="LearningUnit\13.hpp" />
+    <ClInclude Include="LearningUnit\14.hpp" />
+    <ClInclude Include="LearningUnit\15.hpp" />
     <ClInclude Include="LearningUnit\9.hpp" />
     <ClInclude Include="LearningUnit\Model.hpp" />
     <ClInclude Include="Size.h" />

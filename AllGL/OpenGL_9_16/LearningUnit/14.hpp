@@ -8,6 +8,9 @@ class Unit_14:public LearningUnit
 {
 private:
 private:
+	GLuint base;
+	GLfloat rot;
+	GLYPHMETRICSFLOAT gmf[256];
 public:
 	Unit_14(){
 	}
@@ -19,7 +22,13 @@ public:
 	void OnIdle();
 };
 
-void Unit_14::OnInit(){}
+void Unit_14::OnInit(){
+	base = glGenLists(256);
+	HDC hdc = AppFrame::getInstance()->getDC();
+	//(HDC, DWORD, DWORD, DWORD, FLOAT,
+	//FLOAT, int, LPGLYPHMETRICSFLOAT);
+	wglUseFontOutlines(hdc, 32, 96, base, 0, 0, 0, NULL);
+}
 void Unit_14::OnKeyBoard(int Key, bool Touch){
 	if (Touch == false)
 		return;
@@ -30,5 +39,7 @@ void Unit_14::OnKeyBoard(int Key, bool Touch){
 		break;
 	}
 }
-void Unit_14::OnDraw(){}
-void Unit_14::OnIdle(){}
+void Unit_14::OnDraw(){
+}
+void Unit_14::OnIdle(){
+}

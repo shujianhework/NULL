@@ -36,10 +36,10 @@ void Unit_11::OnInit(){
 		for (int j = 0; j < 45; j++)
 		{
 			//波浪效果
-			points[i][j][0] = float((i / 5.0f) - 4.9);
-			points[i][j][1] = float((j / 5.0f) - 4.9);
+			points[i][j][0] = float((i / 5.0f) - 4.5);
+			points[i][j][1] = float((j / 5.0f) - 4.5);
 			//z = sin(x对应弧度值)
-			points[i][j][2] = 0;// float(sin((((i / 5.0f) * 40) / 360.0f)*2.0f*3.141592654));
+			points[i][j][2] = float(sin((((i/5.0f)*40)/360.0f)*2.0f*3.141592654));
 		}
 	}
 }
@@ -80,7 +80,7 @@ void Unit_11::OnDraw(){
 		}
 	}
 	wiggle_count = rand() % 4;
-	/*for (int w = 0; w < wiggle_count;w++){
+	for (int w = 0; w < wiggle_count;w++){
 		for (int j = 0; j < 45; j++)
 		{
 			hold = points[0][j][2];
@@ -90,11 +90,11 @@ void Unit_11::OnDraw(){
 			}
 			points[44][j][2] = hold;
 		}
-	}*/
+	}
 	
 	glEnd();
-	/*xrot += 0.3;
+	xrot += 0.3;
 	yrot += 0.2;
-	zrot += 0.4;*/
+	zrot += 0.4;
 }
 void Unit_11::OnIdle(){}

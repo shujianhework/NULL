@@ -38,7 +38,7 @@ static bool getFormat(std::string path,std::string& formath){
 	if (tempstr.length() >= FILEFORMATSIZE)
 		return false;
 	formath = tempstr;
-	std::string lowformat = Tool::ToLow(tempstr.c_str());
+	std::string lowformat = tempstr.c_str();// Tool::ToLow();
 	if (lowformat == "txt"){
 		return true;
 	}

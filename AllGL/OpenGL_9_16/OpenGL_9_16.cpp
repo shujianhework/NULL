@@ -67,14 +67,6 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance,
 	});
 	app->Start();
 	FreeLearningUnit();
-	/*std::string tempstr = "Data/Tim.bmp";
-	using namespace HHF;
-	SystemFile* sf = SystemFile::Open(tempstr);
-	if (sf){
-		sf->GetBuffer();
-		delete sf;
-	}
-	sf = NULL;*/
 	return true;
 }
 int main(int argc, WCHAR* argv[]){
